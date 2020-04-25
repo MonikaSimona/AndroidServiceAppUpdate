@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.qoscheckapp.network_task.NetworkCheck;
 import com.example.qoscheckapp.notification.ActiveServiceNotification;
 
 import java.util.Timer;
@@ -22,6 +23,9 @@ public class ActiveService extends Service {
     private static Timer timer;
     private TimerTask timerTask;
     public int oldTime;
+    public NetworkCheck networkCheck;
+    public Context context;
+
     public ActiveService() {
         super();
     }
@@ -39,6 +43,15 @@ public class ActiveService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
 //        timeCounter = 0;
+        networkCheck = new NetworkCheck(this);
+        boolean network = networkCheck.networkCheck();
+        if(network){
+            Log.i("START_COMMAND","Connected to the internet");
+        }else{
+            Log.i("START_COMMAND","NOT connected to the internet");
+        }
+
+        Log.i("START_COMMAND","The onStartCommand() is called");
 
         SharedPreferences prefs= getSharedPreferences("com.example.qoscheckapp.ActiveServiceRunning", MODE_PRIVATE);
 
