@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.example.qoscheckapp.network_task.NetworkCheck;
+import com.example.qoscheckapp.network_task.NetworkPingTask;
 import com.example.qoscheckapp.notification.ActiveServiceNotification;
 
 import java.util.Timer;
@@ -47,6 +48,7 @@ public class ActiveService extends Service {
         boolean network = networkCheck.networkCheck();
         if(network){
             Log.i("START_COMMAND","Connected to the internet");
+            new NetworkPingTask().execute();
         }else{
             Log.i("START_COMMAND","NOT connected to the internet");
         }
