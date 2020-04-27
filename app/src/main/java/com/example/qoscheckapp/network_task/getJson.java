@@ -13,8 +13,8 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 public class getJson {
-    public static final String URL ="https://www.googleapis.com/books/v1/volumes?q=Othelo&maxResults=1&printType=books";
-//    public static final String BACKEND_URL ="http://10.0.0.2:5000/getjobs";
+
+    public static final String URL ="http://10.0.2.2:5000/getjobs";
 
     public static String getBackendJson(){
         String json = null;
