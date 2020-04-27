@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -23,9 +24,10 @@ public class ActiveService extends Service {
     private static Service mCurrentService;
     private static Timer timer;
     private TimerTask timerTask;
-    public int oldTime;
     public NetworkCheck networkCheck;
     public Context context;
+    private final static int INTERVAL = 60000;
+
 
     public ActiveService() {
         super();
@@ -47,8 +49,12 @@ public class ActiveService extends Service {
         networkCheck = new NetworkCheck(this);
         boolean network = networkCheck.networkCheck();
         if(network){
+
             Log.i("START_COMMAND","Connected to the internet");
-            new NetworkPingTask().execute();
+
+            taskDelayLoop();
+
+//            new NetworkPingTask().execute();
         }else{
             Log.i("START_COMMAND","NOT connected to the internet");
         }
@@ -71,6 +77,21 @@ public class ActiveService extends Service {
 
         return START_STICKY;
     }
+
+    public void taskDelayLoop(){
+
+        final Handler handler = new Handler();
+        new NetworkPingTask().execute();
+        new Runnable(){
+            @Override
+            public void run() {
+                handler.postDelayed(this,INTERVAL); // 1 minute
+                new NetworkPingTask().execute();
+
+            }
+        }.run();
+    }
+
 
     private void startTimer() {
         Log.i("SERVICE", "Starting timer");
