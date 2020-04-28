@@ -25,11 +25,11 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
                 String host = jsonObject.getString("host");
                 int count = jsonObject.getInt("count");
                 int packetSize = jsonObject.getInt("packetSize");
-//                int jobPeriod = jsonObject.getInt("jobPeriod");
+                int jobPeriod = jsonObject.getInt("jobPeriod");
 //                String jobType = jsonObject.getString("jobtType");
-//                String ping = "";
+
                 try{
-                    String pingCmd = "ping -s "+ packetSize + " -c "+ count + " " + host;
+                    String pingCmd = "ping -i " + jobPeriod + " -s " + packetSize + " -c "+ count + " " + host;
                     Runtime runtime = Runtime.getRuntime();
                     Process process = runtime.exec(pingCmd);
                     BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));

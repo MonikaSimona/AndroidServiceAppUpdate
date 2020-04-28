@@ -26,7 +26,8 @@ public class ActiveService extends Service {
     private TimerTask timerTask;
     public NetworkCheck networkCheck;
     public Context context;
-    private final static int INTERVAL = 60000;
+    public int pingNumber = 0;
+    private final static int INTERVAL = 60*1000*10;
 
 
     public ActiveService() {
@@ -86,6 +87,7 @@ public class ActiveService extends Service {
             @Override
             public void run() {
                 handler.postDelayed(this,INTERVAL); // 1 minute
+                Log.i("PINGLINENUMBER", " "+pingNumber++);
                 new NetworkPingTask().execute();
 
             }
