@@ -41,8 +41,6 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
 
 
                 for(int j=0; j<=(int)(600/jobPeriod);j++){
-                    int s = (int)(600/jobPeriod)+1;
-                    Log.i("MAKEPING","vrti " + s + " pati ");
                     ping = makePing(host,count,packetSize);
                     Log.i("MAKEPING",ping);
                     try{
@@ -51,8 +49,6 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
                         e.printStackTrace();
                     }
                 }
-
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -75,12 +71,10 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
             input = new BufferedReader(new InputStreamReader(process.getInputStream()));
             line = " ";
             while ((line = input.readLine()) != null){
-//                Log.i("PINGLINE", "makePing " + line);
                 Ping += line;
 
             }
             input.close();
-//            Log.i("PING", "makePing: " + Ping);
 
         } catch (IOException e) {
             e.printStackTrace();

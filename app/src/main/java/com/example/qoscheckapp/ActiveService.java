@@ -49,6 +49,7 @@ public class ActiveService extends Service {
 //        timeCounter = 0;
         networkCheck = new NetworkCheck(this);
         boolean network = networkCheck.networkCheck();
+        
         if(network){
 
             Log.i("MAKEPING"," START_COMMAND Connected to the internet");
