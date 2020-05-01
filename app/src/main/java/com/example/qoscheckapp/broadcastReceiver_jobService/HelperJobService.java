@@ -60,7 +60,7 @@ public class HelperJobService extends JobService {
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        Log.i(TAG,"Stopping job");
+        Log.i("MAKEPING","Stopping job");
         Intent broadcastIntent = new Intent("com.example.qoscheckapp");
         sendBroadcast(broadcastIntent);
 

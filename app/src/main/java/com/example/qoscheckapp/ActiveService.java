@@ -27,7 +27,7 @@ public class ActiveService extends Service {
     public NetworkCheck networkCheck;
     public Context context;
     public int pingNumber = 0;
-    private final static int INTERVAL = 60*1000*10;
+    private final static int INTERVAL = 600*1000;
 
 
     public ActiveService() {
@@ -51,16 +51,20 @@ public class ActiveService extends Service {
         boolean network = networkCheck.networkCheck();
         if(network){
 
-            Log.i("START_COMMAND","Connected to the internet");
+            Log.i("MAKEPING"," START_COMMAND Connected to the internet");
 
-            taskDelayLoop();
+            Thread t = new Thread(){
+                public void run(){
+                    taskDelayLoop();
+                }
+            };
+            t.start();
 
-//            new NetworkPingTask().execute();
         }else{
             Log.i("START_COMMAND","NOT connected to the internet");
         }
 
-        Log.i("START_COMMAND","The onStartCommand() is called");
+        Log.i("MAKEPING"," START_COMMAND The onStartCommand() is called");
 
         SharedPreferences prefs= getSharedPreferences("com.example.qoscheckapp.ActiveServiceRunning", MODE_PRIVATE);
 
@@ -80,18 +84,17 @@ public class ActiveService extends Service {
     }
 
     public void taskDelayLoop(){
+        while(true){
 
-        final Handler handler = new Handler();
-        new NetworkPingTask().execute();
-        new Runnable(){
-            @Override
-            public void run() {
-                handler.postDelayed(this,INTERVAL); // 1 minute
-                Log.i("PINGLINENUMBER", " "+pingNumber++);
-                new NetworkPingTask().execute();
-
+            new NetworkPingTask().execute();
+            Log.i("MAKEPING","vleguva vo doInBackground");
+            try{
+                Thread.sleep(INTERVAL);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        }.run();
+        }
+
     }
 
 
