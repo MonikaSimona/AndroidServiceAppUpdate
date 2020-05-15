@@ -49,7 +49,7 @@ public class ActiveService extends Service {
 //        timeCounter = 0;
         networkCheck = new NetworkCheck(this);
         boolean network = networkCheck.networkCheck();
-        
+
         if(network){
 
             Log.i("MAKEPING"," START_COMMAND Connected to the internet");
@@ -67,7 +67,7 @@ public class ActiveService extends Service {
 
         Log.i("MAKEPING"," START_COMMAND The onStartCommand() is called");
 
-        SharedPreferences prefs= getSharedPreferences("com.example.qoscheckapp.ActiveServiceRunning", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("com.example.qoscheckapp.ActiveServiceRunning", MODE_PRIVATE);
 
         if(prefs.getInt("timeCounter",0)!=0){
             timeCounter = prefs.getInt("counter",0);
@@ -87,7 +87,7 @@ public class ActiveService extends Service {
     public void taskDelayLoop(){
         while(true){
 
-            new NetworkPingTask().execute();
+            new NetworkPingTask(getApplicationContext()).execute();
             Log.i("MAKEPING","vleguva vo doInBackground");
             try{
                 Thread.sleep(INTERVAL);
@@ -143,7 +143,7 @@ public class ActiveService extends Service {
     public void onDestroy() {
         super.onDestroy();
         try {
-            SharedPreferences prefs= getSharedPreferences("uk.ac.shef.oak.ServiceRunning", MODE_PRIVATE);
+            SharedPreferences prefs = getSharedPreferences("com.example.qoscheckapp.ActiveServiceRunning", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt("timeCounter", timeCounter);
             editor.apply();

@@ -14,7 +14,7 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class getJson {
 
-    public static final String URL ="http://10.0.2.2:5000/getjobs";
+    public static final String URL ="http://10.0.2.2:5000/getjobs/emulator";
 
     public static String getBackendJson(){
         String json = null;

@@ -1,9 +1,15 @@
 package com.example.qoscheckapp.network_task;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SharedMemory;
 import android.util.Log;
+
+import com.example.qoscheckapp.ActiveService;
+import com.example.qoscheckapp.MainActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.BufferOverflowException;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class NetworkPingTask extends AsyncTask<Void,Void,String>{
     public static String ping;
     public String host;
@@ -22,10 +30,20 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
     public  int jobPeriod;
     public BufferedReader input;
     public String line;
+    public String resultOk;
+    public NetworkCheck networkCheck;
+    public Context mContext;
+    private SharedPreferences prefs;
+    public NetworkPingTask(Context context){
+        mContext=context;
+    }
 
 
     @Override
     protected String doInBackground(Void... voids) {
+
+        networkCheck =  new NetworkCheck(mContext.getApplicationContext());
+
         Log.i("MAKEPING","pocnuva doInBackground");
 
         try {
@@ -41,8 +59,11 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
 
 
                 for(int j=0; j<=(int)(600/jobPeriod);j++){
-                    ping = makePing(host,count,packetSize);
-                    Log.i("MAKEPING",ping);
+
+
+                    makePing(host,count,packetSize);
+
+
                     try{
                         Thread.sleep(jobPeriod*1000);
                     } catch (InterruptedException e) {
@@ -50,7 +71,7 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
                     }
                 }
             }
-        } catch (JSONException e) {
+        } catch (JSONException  e) {
             e.printStackTrace();
         }
 
@@ -75,6 +96,33 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
 
             }
             input.close();
+            Log.i("MAKEPING",Ping);
+            prefs = mContext.getSharedPreferences("com.example.qoscheckapp.ActiveServiceRunning", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            if(networkCheck.networkCheck()){
+                postJson.postBackendJson(Ping);
+                if(prefs.getString("result1",null)!= null){
+                    postJson.postBackendJson(prefs.getString("result1",null));
+                    editor.putString("result1",null);
+                }
+                if(prefs.getString("result2",null)!= null){
+                    postJson.postBackendJson(prefs.getString("result2",null));
+                    editor.putString("result2",null);
+                }
+                else{
+                    if((prefs.getString("result1",null)!=null ) && (prefs.getString("result1",null)!=null)
+                    || (prefs.getString("result1",null)==null ) && (prefs.getString("result1",null)==null) ){
+                        editor.putString("result1",Ping);
+                    }else {
+                        editor.putString("result2",Ping);
+                    }
+                    editor.apply();
+                }
+
+
+            }
+//            Log.i("MAKEPING",Ping);
+//            postJson.postBackendJson(Ping);
 
         } catch (IOException e) {
             e.printStackTrace();
