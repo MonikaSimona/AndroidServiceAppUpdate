@@ -30,6 +30,7 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
     public  int jobPeriod;
     public BufferedReader input;
     public String line;
+    public  String jobType;
     public String resultOk;
     public NetworkCheck networkCheck;
     public Context mContext;
@@ -44,6 +45,8 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
 
         networkCheck =  new NetworkCheck(mContext.getApplicationContext());
 
+            Top.doTop();
+
         Log.i("MAKEPING","pocnuva doInBackground");
 
         try {
@@ -55,21 +58,23 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
                  count = jsonObject.getInt("count");
                  packetSize = jsonObject.getInt("packetSize");
                 jobPeriod = jsonObject.getInt("jobPeriod");
-//                String jobType = jsonObject.getString("jobtType");
+                jobType = jsonObject.getString("jobType");
 
+                Log.i("MAKEPING","JOB TYPE = " + jobType);
 
-                for(int j=0; j<=(int)(600/jobPeriod);j++){
+                for(int j=0; j<=(int)(600/jobPeriod);j++) {
 
+//                    if(jobType=="PING") {
+                    makePing(host, count, packetSize);
+//                    }
 
-                    makePing(host,count,packetSize);
-
-
-                    try{
-                        Thread.sleep(jobPeriod*1000);
+                    try {
+                        Thread.sleep(jobPeriod * 1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+
             }
         } catch (JSONException  e) {
             e.printStackTrace();
@@ -118,15 +123,11 @@ public class NetworkPingTask extends AsyncTask<Void,Void,String>{
                     }
                     editor.apply();
                 }
-
-
             }
-//            Log.i("MAKEPING",Ping);
-//            postJson.postBackendJson(Ping);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         return Ping;
     }
